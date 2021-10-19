@@ -46,3 +46,37 @@ I'm going to primarily use the command line utilizing GDAL/OGR command utilities
 
 The resulting dataset will then be ported into an HTML document with CSS and Javascript to create a webpage. jQuery and Leaflet are the primary libaries used for these tasks. 
 
+
+## 1. Create shapefile using ogr2ogr 
+
+Below are the steps for creating a shapefile with GDAL/OGR out of a csv file. The afghanConflicts.csv will be used to extract lat and long values to create a shapefile. 
+
+First, create a projection file in the terminal with the following command: 
+
+`$ ogr2ogr -f "ESRI Shapefile" afghan_conflicts.dbf afghanConflicts.csv`
+
+This creates a database file we'll need later to build the shapefiles. 
+
+Next, create a .vrt file that will be used to create points from the latitude and longitude fields in the afghanConflicts.csv file. The following syntax in employed to make the .vrt file in an open file in VSCode: 
+
+`<OGRVRTDataSource>
+  <OGRVRTLayer name="afghanConflicts">
+  <SrcDataSource>afghanConflicts.csv</SrcDataSource>
+  <SrcLayer>afghanConflicts</SrcLayer>
+  <GeometryType>wkbPoint</GeometryType>
+  <LayerSRS>+proj=stere +lat_0=90 +lat_ts=71 +lon_0=-39 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</LayerSRS>
+  <GeometryField encoding="PointFromColumns" x="longitude" y="latitude"/>
+  </OGRVRTLayer>
+</OGRVRTDataSource>`
+
+
+We now have our database file and our .vrt that can be used to build a Shapefile in OGR. To make the shapefile, we'll create a directory to store the associated shapefiles within the command. The syntax looks like this:
+
+`ogr2ogr -f "ESRI Shapefile" afghanConflicts afghan_xy.vrt`
+
+This will create a directory within the data folder that will store these shapefiles. Then, use QGIS to verify that the Shapefile was made correctly:
+
+
+![Image of Conflicts on QGIS](images/conflicts_screenshot.JPG)
+
+hmmm.. this still needs work. 

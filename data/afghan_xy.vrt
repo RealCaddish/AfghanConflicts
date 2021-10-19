@@ -1,0 +1,9 @@
+<OGRVRTDataSource>
+  <OGRVRTLayer name="afghanConflicts">
+  <SrcDataSource>afghanConflicts.csv</SrcDataSource>
+  <SrcLayer>afghanConflicts</SrcLayer>
+  <GeometryType>wkbPoint</GeometryType>
+  <LayerSRS>+proj=stere +lat_0=90 +lat_ts=71 +lon_0=-39 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</LayerSRS>
+  <GeometryField encoding="PointFromColumns" x="longitude" y="latitude"/>
+  </OGRVRTLayer>
+</OGRVRTDataSource>
