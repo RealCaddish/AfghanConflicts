@@ -1,7 +1,7 @@
 # Afghanistan Conflicts
 ## Mapping conflict sites in Afghanistan's various provinces from 2001 - 2019. 
 
-This project aims to map data provided by Uppsala University's Department of Peace and Conflict Research. The goal of this project is to create an interactive map visualizing the pinpoints of various conflict events in Afghanistan between 2001-2019. However, it should be noted that this dataset has conflict data from as early as the Afghan Civil War in 1989. 
+This project aims to map data provided by <a href='https://ucdp.uu.se/'>Uppsala University's Department of Peace and Conflict Research. </a> The goal of this project is to create an interactive map visualizing the pinpoints of various conflict events in Afghanistan between 2001-2019. However, it should be noted that this dataset has conflict data from as early as the Afghan Civil War in 1989. 
 
 The dataset is hosted via the Humanitarian Data Exchange and is entitled, *"Afghanistan - Data on Conflict Events."* Lead authors Ralph Sundberg and Erik Melander published the dataset in the Journal of Peace Research in 2013: 
 
@@ -126,4 +126,45 @@ Progress!
 To recap, we now have our administrative boundaries (both Afghanistan and its subsequent provinces) properly selected out and saved using OGR. Lastly, let's add urban areas of Afghanistan to this. 
 
 # 1.3 Afghanistan Urban Areas
+
+For the urban areas in Afghanistan, I've decided to extract them via QGIS because I haven't found a good solution yet using ogr2ogr. Below is a screenshot of the selected urban areas of Afghanistan from Natural Earth:
+
+![Image Verifying Afghan Urban Areas](images/afghan_urban_areas.JPG)
+
+Super! Now we have our urban areas, provinces, and state boundaries. Next, we'll do some quick cleaning of the conflict data and then convert our shapefiles to JSON for webmapping. 
+
+# 1.4 Python for Conflict Data Analysis 
+
+See .ipynb for analysis of the conflict data. 
+
+# 1.5 Converting Shapefiles to JSON for the Webmapping with OGR
+
+Let's convert shapefiles to JSON now with OGR. I'll begin in the order taken from the previous steps starting with the recently cleaned conflict data, 'clean_conflicts.shp':
+
+```
+$ ogr2ogr -f "GeoJSON" clean_conflicts.json clean_conflicts.shp
+```
+
+Let's do the same for the rest of our datasets. I created a subdirectory for storing our json files named 'json' naturally. 
+
+Afghanistan provinces:
+
+```
+$ ogr2ogr -f "GeoJSON" ../json/afghan_provinces.json afghan_provinces.shp
+```
+Afghanistan polygon:
+
+```
+$ ogr2ogr -f "GeoJSON" ../json/afghanistan.json afghanistan.shp
+```
+
+Afghanistan urban areas:
+
+```
+$ ogr2ogr -f "GeoJSON" ../json/afghan_urban_areas.json afghan_urban_areas.shp
+```
+
+# 2. Webmapping 
+
+Let's now begin porting our json files to the index.html file. 
 
