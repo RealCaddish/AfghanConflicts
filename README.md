@@ -47,7 +47,7 @@ I'm going to primarily use the command line utilizing GDAL/OGR command utilities
 The resulting dataset will then be ported into an HTML document with CSS and Javascript to create a webpage. jQuery and Leaflet are the primary libaries used for these tasks. 
 
 
-## 1. Create shapefile using ogr2ogr 
+## 1.1 Create the Conflict Points Shapefile with ogr2ogr 
 
 Below are the steps for creating a shapefile with GDAL/OGR out of a csv file. The afghanConflicts.csv will be used to extract lat and long values to create a shapefile. 
 
@@ -67,22 +67,63 @@ Next, create a .vrt file that will be used to create points from the latitude an
     <SrcDataSource>afghanConflicts.csv</SrcDataSource>
     <SrcLayer>afghanConflicts</SrcLayer>
     <GeometryType>wkbPoint</GeometryType>
-    <LayerSRS>+proj=stere +lat_0=90 +lat_ts=71 +lon_0=-39 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</LayerSRS>
-    <GeometryField encoding="PointFromColumns" x="longitude" y="latitude"/>
+    <LayerSRS>+proj=stere +lat_0=90 +lat_ts=71 +lon_0=-39 +k=1 +x_0=0 
+    +y_0=0 +datum=WGS84 +units=m +no_defs</LayerSRS>
+    <GeometryField encoding="PointFromColumns" x="longitude" 
+    y="latitude"/>
     </OGRVRTLayer>
 </OGRVRTDataSource>
 ```
 
 
-We now have our database file and our .vrt that can be used to build a Shapefile in OGR. To make the shapefile, we'll create a directory to store the associated shapefiles within the command. The syntax looks like this:
+We now have our database file and .vrt that can be used to build a Shapefile in OGR. To make the shapefile, we'll create a directory to store the associated shapefiles within the command. The syntax looks like this:
 
 ```
-$ ogr2ogr -f "ESRI Shapefile" afghanConflicts afghan_xy.vrt
+$ogr2ogr -f "ESRI Shapefile" afghanConflicts afghan_xy.vrt
 ```
 
 This will create a directory within the data folder that will store these shapefiles. Then, use QGIS to verify that the Shapefile was made correctly:
 
 
-![Image of Conflicts on QGIS](images/conflicts_screenshot.JPG)
+![Image of Conflicts on QGIS](images/conflict_points.JPG)
 
-hmmm.. this still needs work. 
+
+# 1.2 Afghan Sovereignty Shapefile with ogr2ogr
+
+First, let's use OGR to verify the CRS used for the administrative boundaries from Natural Earth:
+
+```
+$ ogrinfo -so ne_10m_admin_0_sovereignty.shp ne_10m_admin_0_sovereignty 
+```
+
+This outputs the following information:
+
+![Image of sovereignty information](images/sovereignty_info.JPG)
+
+We can see that the administrative boundaries are already in WGS 84 (EPSG: 4326) so we won't need to reproject it to a different CRS. 
+
+Next, we can select out only Afghanistan as the only administrative unit we'll want for this project. 
+
+```
+$ ogr2ogr -f "ESRI Shapefile" -where "SOVEREIGNT='Afghanistan'" afghanistan.shp ne_10m_admin_0_sovereignty/ne_10m_admin_0_sovereignty.shp
+```
+
+Now verify in QGIS: 
+
+![Image Verifying Afghanistan Shapefile](images/afghanistan.JPG)
+
+# 1.3 Afghanistan Provinces 
+
+We'll do a similar process to the provinces shapefile from Natural Earth: 
+
+```
+$ ogr2ogr -f "ESRI Shapefile" -where "admin='Afghanistan'" afghanistan.shp ne_10m_admin_0_sovereignty/ne_10m_admin_0_sovereignty.shp
+```
+![Image Verifying Afghan Provinces](images/afghan_provinces.JPG)
+
+Progress! 
+
+To recap, we now have our administrative boundaries (both Afghanistan and its subsequent provinces) properly selected out and saved using OGR. Lastly, let's add urban areas of Afghanistan to this. 
+
+# 1.3 Afghanistan Urban Areas
+

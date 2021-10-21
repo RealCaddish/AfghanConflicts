@@ -156,3 +156,7 @@ dmypy.json
 # images
 images/
 *.JPG
+ 
+
+ *.README.html
+
