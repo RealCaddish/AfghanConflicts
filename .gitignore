@@ -156,9 +156,12 @@ dmypy.json
 # images
 images/
 *.JPG
- 
 
  *.README.html.
 
+# ignore provinces folder
+data/ne_10m_admin_1_states_provinces
 
+# ignore urban areas folder 
+data/ne_10m_urban_areas
 
