@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Afghanistan War Conflict Areas</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    />
+    <style>
+      body,
+      #map {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.75);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const options = {
+        center: [33.91, 65.88],
+        zoom: 8,
+        minZoom: 8,
+        maxZoom: 10,
+      };
+      const map = L.map('map', options);
+
+      $.when(
+        $.getJSON('data/json/afghanistan.json'),
+        $.getJSON('data/json/afghan_urban_areas.json'),
+        $.getJSON('data/json/clean_conflicts.json')
+      ).done(function (afghanistanData, urbanAreasData, conflictsData) {
+        drawMap(afghanistanData, urbanAreasData, conflictsData);
+      });
+
+      function drawMap(afghanistanData, urbanAreasData, conflictsData) {
+        L.geoJson(provincesData).addTo(map);
+        L.geoJson(afghanistanData).addTo(map);
+        L.geoJson(urbanAreasData).addTo(map);
+        L.geoJson(conflictsData).addTo(map);
+      }
+
+
+    </script>
+  </body>
+</html>
