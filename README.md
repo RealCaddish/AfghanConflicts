@@ -19,10 +19,11 @@ https://data.humdata.org/dataset/ucdp-data-for-afghanistan
 
  1. Goals
  2. Workflow
- 3. Citations
+ 3. Webmapping
+ 4. Citations
 
 
-# Goals 
+# 1. Goals 
 
 The online map geolocates the lat/lon values provided in the dataset within various provinces. The data should be cleaned and trimmed so that we can view conflict sites only constrained to the United States' Afghanistan War from the years 2001 - 2019. Additionally, any unnecessary or irrelevant fields will be dropped. 
 
@@ -40,14 +41,14 @@ The tooltip will supply the following data:
 Other data may be added in the future. 
 
 
-# Workflow 
+# 2. Workflow 
 
 I'm going to primarily use the command line utilizing GDAL/OGR command utilities for data processing and trimming but may incorporate QGIS and MapShaper. 
 
 The resulting dataset will then be ported into an HTML document with CSS and JavaScript to create a webpage. jQuery and Leaflet are the primary libraries used for these tasks. 
 
 
-## 1.1 Create the Conflict Points Shapefile with ogr2ogr 
+## 2.1 Create the Conflict Points Shapefile with ogr2ogr 
 
 Below are the steps for creating a shapefile with GDAL/OGR out of a csv file. The afghanConflicts.csv will be used to extract lat and long values to create a shapefile. 
 
@@ -88,7 +89,7 @@ This will create a directory within the data folder that will store these shapef
 ![Image of Conflicts on QGIS](images/conflict_points.JPG)
 
 
-# 1.2 Afghan Sovereignty Shapefile with ogr2ogr
+# 2.2 Afghan Sovereignty Shapefile with ogr2ogr
 
 First, let's use OGR to verify the CRS used for the administrative boundaries from Natural Earth:
 
@@ -112,7 +113,7 @@ Now verify in QGIS:
 
 ![Image Verifying Afghanistan Shapefile](images/afghanistan.JPG)
 
-# 1.3 Afghanistan Provinces 
+# 2.3 Afghanistan Provinces 
 
 We'll do a similar process to the provinces shapefile from Natural Earth: 
 
@@ -125,7 +126,7 @@ Progress!
 
 To recap, we now have our administrative boundaries (both Afghanistan and its subsequent provinces) properly selected out and saved using OGR. Lastly, let's add urban areas of Afghanistan to this. 
 
-# 1.3 Afghanistan Urban Areas
+# 2.4 Afghanistan Urban Areas
 
 For the urban areas in Afghanistan, I've decided to extract them via QGIS because I haven't found a good solution yet using ogr2ogr. Below is a screenshot of the selected urban areas of Afghanistan from Natural Earth:
 
@@ -133,11 +134,11 @@ For the urban areas in Afghanistan, I've decided to extract them via QGIS becaus
 
 Super! Now we have our urban areas, provinces, and state boundaries. Next, we'll do some quick cleaning of the conflict data and then convert our shapefiles to JSON for webmapping. 
 
-# 1.4 Python for Conflict Data Analysis 
+# 2.5 Python for Conflict Data Analysis 
 
 See .ipynb for analysis of the conflict data. 
 
-# 1.5 Converting Shapefiles to JSON for the Webmapping with OGR
+# 2.6 Converting Shapefiles to JSON for the Webmapping with OGR
 
 Let's convert shapefiles to JSON now with OGR. I'll begin in the order taken from the previous steps starting with the recently cleaned conflict data, 'clean_conflicts.shp':
 
@@ -164,7 +165,17 @@ Afghanistan urban areas:
 $ ogr2ogr -f "GeoJSON" ../json/afghan_urban_areas.json afghan_urban_areas.shp
 ```
 
-# 2. Webmapping 
+# 3. Webmapping 
 
-Let's now begin porting our json files to the index.html file. 
+See index.html file for webmapping 
+
+
+# 4. Citations 
+
+Högbladh Stina, 2019, “UCDP GED Codebook version 19.1”, Department of Peace and Conflict Research, Uppsala University
+
+Sundberg, Ralph, and Erik Melander, 2013, “Introducing the UCDP Georeferenced Event Dataset”, Journal of Peace Research, vol.50, no.4, 523-532
+
+<a href='https://data.humdata.org/dataset/ucdp-data-for-afghanistan'>Link to Data on Conflicts in Afghanistan </a>
+
 
