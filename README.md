@@ -7,7 +7,7 @@ The dataset is hosted via the Humanitarian Data Exchange and is entitled, *"Afgh
 
 Sundberg, Ralph, and Erik Melander, 2013, *Introducing the UCDP Georeferenced Event Dataset*, Journal of Peace Research, vol.50, no.4, 523-532.
 
-Högbladh Stina, 2019, *UCDP GED Codebook version 19.1*, Department of Peace and Conflict Research, Uppsala University.
+Högbladh Stena, 2019, *UCDP GED Codebook version 19.1*, Department of Peace and Conflict Research, Uppsala University.
 
 A link to the dataset can be found here:
 
@@ -44,7 +44,7 @@ Other data may be added in the future.
 
 I'm going to primarily use the command line utilizing GDAL/OGR command utilities for data processing and trimming but may incorporate QGIS and MapShaper. 
 
-The resulting dataset will then be ported into an HTML document with CSS and Javascript to create a webpage. jQuery and Leaflet are the primary libaries used for these tasks. 
+The resulting dataset will then be ported into an HTML document with CSS and JavaScript to create a webpage. jQuery and Leaflet are the primary libraries used for these tasks. 
 
 
 ## 1.1 Create the Conflict Points Shapefile with ogr2ogr 

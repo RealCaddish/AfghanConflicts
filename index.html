@@ -1,61 +1,115 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
 
-    <title>Afghanistan War Conflict Areas</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-    />
-    <style>
-      body,
-      #map {
-        position: absolute;
-        width: 100%;
-        top: 0;
-        bottom: 0;
-        margin: 0;
-        padding: 0;
-        background: rgba(0, 0, 0, 0.75);
+<head>
+  <meta charset="utf-8" />
+
+  <title>Afghanistan War Conflict Areas</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <style>
+    body,
+    #map {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      bottom: 0;
+      margin: 0;
+      padding: 0;
+      background: rgba(0, 0, 0, 0.75);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script>
+    const options = {
+      center: [33.91, 65.88],
+      zoom: 6,
+      minZoom: 6,
+      maxZoom: 10,
+    };
+    const map = L.map('map', options);
+
+    $.when(
+      $.getJSON('data/json/afghanistan.json'),
+      $.getJSON('data/json/afghan_provinces.json'),
+      $.getJSON('data/json/afghan_urban_areas.json'),
+      $.getJSON('data/json/clean_conflicts.json'),
+    ).done(function (afghanistanData, provinceData, urbanAreasData, conflictsData) {
+      drawMap(afghanistanData, provinceData, urbanAreasData, conflictsData);
+    });
+
+    // drawMap function to add features
+    function drawMap(afghanistanData, provinceData, urbanAreasData, conflictsData) {
+
+      // return circleMarker instead of a typical Leaflet path
+      const circleOptions = {
+        pointToLayer: function (feature, ll) {
+          return L.circleMarker(ll, {
+            opacity: 1,
+            weight: .6,
+            fillOpacity: .6,
+            fillColor: '#F2C2D4',
+            color: '#000000'
+          })
+        }
       }
-    </style>
-  </head>
+      // add Afghanistan boundary
+      L.geoJson(afghanistanData, {
+        style: afghanistanOptions,
+      }).addTo(map);
 
-  <body>
-    <div id="map"></div>
+      L.geoJson(provinceData, {
+        style: provinceOptions
+      
+          }).addTo(map)
 
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.min.js"
-      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      const options = {
-        center: [33.91, 65.88],
-        zoom: 8,
-        minZoom: 8,
-        maxZoom: 10,
-      };
-      const map = L.map('map', options);
+      // Add Afghanistan Urban Areas
+      L.geoJson(urbanAreasData, {
+        style: urbanOptions
+      }).addTo(map);
 
-      $.when(
-        $.getJSON('data/json/afghanistan.json'),
-        $.getJSON('data/json/afghan_urban_areas.json'),
-        $.getJSON('data/json/clean_conflicts.json')
-      ).done(function (afghanistanData, urbanAreasData, conflictsData) {
-        drawMap(afghanistanData, urbanAreasData, conflictsData);
-      });
+      L.geoJson(conflictsData, circleOptions).addTo(map);
 
-      function drawMap(afghanistanData, urbanAreasData, conflictsData) {
-        L.geoJson(afghanistanData).addTo(map);
-        L.geoJson(urbanAreasData).addTo(map);
-        L.geoJson(conflictsData).addTo(map);
-      }
+    }
 
+    // adding the basemap from Thunderforest
+    var Thunderforest_Outdoors = L.tileLayer(
+      'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={apikey}', {
+        attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        apikey: '21ef519d083c43a0b670676d01dbe02f',
+        maxZoom: 22
+      }).addTo(map);
 
-    </script>
-  </body>
+  // Options settings for various layers
+    const afghanistanOptions = {
+      fillColor: '#C8C2F2',
+      fillOpacity: 0,
+      weight: 2,
+      color: '#000000'
+    }
+
+    const provinceOptions = {
+      fillColor: '#606060',
+      fillOpacity: .8, 
+      weight: .6,
+      color: '#000000'
+    }
+
+    const urbanOptions = {
+      fillColor: 'yellow',
+      fillOpacity: 1,
+      weight: 1, 
+      color: '#000000' 
+
+    }
+  </script>
+</body>
+
 </html>
