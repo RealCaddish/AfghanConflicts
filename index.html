@@ -18,6 +18,24 @@
       padding: 0;
       background: rgba(0, 0, 0, 0.75);
     }
+
+    h1 {
+      color: #460909;
+      font-family: arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-bottom: 1px;
+    }
+
+    h2 {
+      color: #0e0303;
+      font-family: arial, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-bottom: 1px;
+    }
   </style>
 </head>
 
@@ -52,8 +70,51 @@
     // drawMap function to add features
     function drawMap(afghanistanData, provinceData, urbanAreasData, conflictsData) {
 
-      // return circleMarker instead of a typical Leaflet path
+      // add Afghanistan boundary
+      L.geoJson(afghanistanData, {
+        style: afghanistanOptions,
+      }).addTo(map);
+
+      // add Afghanistan provinces polygons
+      L.geoJson(provinceData, {
+        style: provinceOptions,
+        onEachFeature: function (feature, layer) {
+          let tooltip = `<h1>Province:</h1> <h2>${feature.properties.gn_name}</h2>`
+          layer.bindTooltip(tooltip, {
+            sticky: true,
+            className: 'tooltip'
+          });
+          layer.on('mouseover', function (e) {
+            this.setStyle({
+              fillOpacity: .1,
+              color: 'yellow',
+              weight: 2
+            })
+          });
+          layer.on('mouseout', function (e) {
+            this.setStyle(provinceOptions);
+          });
+        },
+      }).addTo(map)
+
+      // Add Afghanistan urban areas polygons
+      L.geoJson(urbanAreasData, {
+        style: urbanOptions
+      }).addTo(map);
+
+      console.log(conflictsData)
+
+      // options for conflict CircleMarkers
       const circleOptions = {
+
+        opacity: 1,
+        weight: .6,
+        fillOpacity: .6,
+        fillColor: '#F2C2D4',
+        color: '#000000'
+      }
+      // add Afghanistan conflict points 
+      var conflicts = L.geoJson(conflictsData, {
         pointToLayer: function (feature, ll) {
           return L.circleMarker(ll, {
             opacity: 1,
@@ -62,53 +123,47 @@
             fillColor: '#F2C2D4',
             color: '#000000'
           })
+        },
+        onEachFeature: function (feature, layer) {
+          let tooltip = `<h1>Conflict Participants:</h1>
+                        <h2>${feature.properties.side_a}, & ${feature.properties.side_b}</h2>
+                        
+                        <h1>Casualties: </h1>
+                          <h2>${feature.properties.side_a}: ${feature.properties.deaths_a} </h2>
+                           <h2>${feature.properties.side_b}: ${feature.properties.deaths_b}</h2>
+
+                           <h1>Conflict Start: </h1>
+                           <h2>${feature.properties.date_start}</h2>
+
+                           <h1>Conflict End: </h1>
+                           <h2> ${feature.properties.date_end}</h2>
+
+                           <h1>Source:</h1>
+                           <h2>${feature.properties.source_art}</h2>
+
+                           `;
+          //bind the tooltip to the layer
+          layer.bindTooltip(tooltip, {
+            sticky: true,
+            className: 'tooltip'
+          });
+
+          //visual affordances 
+          layer.on('mouseover', function (e) {
+            this.setStyle({
+              fillOpacity: .8,
+              color: '#C63030',
+              color: '#C63030',
+              fillColor: 'red',
+              weight: 2
+            });
+          })
+          layer.on('mouseout', function (feature, layer) {
+            this.setStyle(circleOptions)
+          })
         }
-      }
-      // add Afghanistan boundary
-      L.geoJson(afghanistanData, {
-        style: afghanistanOptions,
       }).addTo(map);
-
-      // add Afghanistan provinces polygons
-      L.geoJson(provinceData, {
-        style: provinceOptions
-
-      }).addTo(map)
-
-      // Add Afghanistan urban areas polygons
-      L.geoJson(urbanAreasData, {
-        style: urbanOptions
-      }).addTo(map);
-
-
-      console.log(conflictsData)
-
-      L.geoJson(conflictsData, circleOptions).addTo(map)
-    //   // Add Afghanistan confrontations data
-    //   L.geoJson(conflictsData, {
-    //     style: circleOptions,
-    //     onEachFeature: function (feature, layer) {
-
-    //       let tooltip = feature.properties.side_a;
-
-    //       //bind tooltip
-    //       layer.bindTooltip(tooltip, {
-    //         sticky: true,
-    //         className: 'tooltip',
-    //       });
-    //       //visual affordance
-    //       layer.on('mouseover', function (e) {
-    //         this.setStyle({
-    //           fillOpacity: 0.1
-    //         });
-    //       });
-    //       layer.on('mouseout', function (e) {
-    //         this.setStyle(circleOptions)
-    //       })
-    //     }
-    //   }).addTo(map);
-    // 
-  }
+    }
 
     // adding the basemap from Thunderforest
     var Thunderforest_Outdoors = L.tileLayer(
