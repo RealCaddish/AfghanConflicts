@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
 
-  <title>Afghanistan War Conflict Areas</title>
+  <title>Afghanistan War Confrontations Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
   <style>
     body,
@@ -28,14 +28,18 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script>
+    // set options for the map object
     const options = {
       center: [33.91, 65.88],
       zoom: 6,
       minZoom: 6,
       maxZoom: 10,
     };
+
+    // creating the map object
     const map = L.map('map', options);
 
+    // jQuery calls to add the json files and subsequent drawMap function
     $.when(
       $.getJSON('data/json/afghanistan.json'),
       $.getJSON('data/json/afghan_provinces.json'),
@@ -65,19 +69,46 @@
         style: afghanistanOptions,
       }).addTo(map);
 
+      // add Afghanistan provinces polygons
       L.geoJson(provinceData, {
         style: provinceOptions
-      
-          }).addTo(map)
 
-      // Add Afghanistan Urban Areas
+      }).addTo(map)
+
+      // Add Afghanistan urban areas polygons
       L.geoJson(urbanAreasData, {
         style: urbanOptions
       }).addTo(map);
 
-      L.geoJson(conflictsData, circleOptions).addTo(map);
 
-    }
+      console.log(conflictsData)
+
+      L.geoJson(conflictsData, circleOptions).addTo(map)
+    //   // Add Afghanistan confrontations data
+    //   L.geoJson(conflictsData, {
+    //     style: circleOptions,
+    //     onEachFeature: function (feature, layer) {
+
+    //       let tooltip = feature.properties.side_a;
+
+    //       //bind tooltip
+    //       layer.bindTooltip(tooltip, {
+    //         sticky: true,
+    //         className: 'tooltip',
+    //       });
+    //       //visual affordance
+    //       layer.on('mouseover', function (e) {
+    //         this.setStyle({
+    //           fillOpacity: 0.1
+    //         });
+    //       });
+    //       layer.on('mouseout', function (e) {
+    //         this.setStyle(circleOptions)
+    //       })
+    //     }
+    //   }).addTo(map);
+    // 
+  }
 
     // adding the basemap from Thunderforest
     var Thunderforest_Outdoors = L.tileLayer(
@@ -87,28 +118,27 @@
         maxZoom: 22
       }).addTo(map);
 
-  // Options settings for various layers
+    // Options settings for various layers
     const afghanistanOptions = {
       fillColor: '#C8C2F2',
       fillOpacity: 0,
       weight: 2,
       color: '#000000'
-    }
+    };
 
     const provinceOptions = {
       fillColor: '#606060',
-      fillOpacity: .8, 
+      fillOpacity: .8,
       weight: .6,
       color: '#000000'
-    }
+    };
 
     const urbanOptions = {
       fillColor: 'yellow',
       fillOpacity: 1,
-      weight: 1, 
-      color: '#000000' 
-
-    }
+      weight: 1,
+      color: '#000000'
+    };
   </script>
 </body>
 
